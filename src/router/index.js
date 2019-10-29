@@ -5,6 +5,7 @@ import Home from '@/views/home'
 import welcome from '@/views/welcome'
 import NotFound from '@/views/404'
 import local from '@/utils/local'
+import Article from '@/views/article'
 Vue.use(VueRouter)
 const router = new VueRouter({
   // 配置对象
@@ -19,6 +20,9 @@ const router = new VueRouter({
     children: [{
       path: '/',
       component: welcome
+    }, {
+      path: '/article',
+      component: Article
     }]
   },
   {
