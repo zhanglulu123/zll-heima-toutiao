@@ -26,7 +26,9 @@
 </template>
 
 <script>
+import local from '@/utils/local'
 export default {
+  // 自定义校验规则
   data () {
     const checkMobile = (rule, value, callBack) => {
       if (/^1[3-9]\d{9}$/.test(value)) {
@@ -37,8 +39,8 @@ export default {
     }
     return {
       loginForm: {
-        mobile: '',
-        code: ''
+        mobile: '19999999999',
+        code: '246810'
       },
       loginRules: {
         mobile: [
@@ -54,19 +56,18 @@ export default {
   },
   methods: {
     login () {
-      this.$refs['loginForm'].validate(valid => {
+      this.$refs['loginForm'].validate(async valid => {
         if (valid) {
+          try {
+            const { data: { data } } = await this.$http.post('authorizations', this.loginForm)
+            // 成功
+            // 保存用户的信息
+            local.setUser(data)
+            this.$router.push('/')
+          } catch (e) {
+            this.$message.error('手机号或验证码错误')
+          }
           // 发请求 校验手机号和验证码  后台
-          this.$http
-            .post('authorizations', this.loginForm)
-            .then(res => {
-              // 成功
-              this.$router.push('/')
-            })
-            .catch(() => {
-              // 失败 提示
-              this.$message.error('手机号或验证码错误')
-            })
         }
       })
     }

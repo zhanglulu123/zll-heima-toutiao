@@ -4,6 +4,7 @@ import Login from '@/views/login'
 import Home from '@/views/home'
 import welcome from '@/views/welcome'
 import NotFound from '@/views/404'
+import local from '@/utils/local'
 Vue.use(VueRouter)
 const router = new VueRouter({
   // 配置对象
@@ -25,5 +26,18 @@ const router = new VueRouter({
     component: NotFound
   }
   ]
+})
+// 导航守卫  router.beforeEach()  在路由跳转前执行
+router.beforeEach((to, from, next) => {
+  const user = local.getUser()
+  if (user && user.token) {
+    next()
+  } else {
+    if (to.path === '/login') {
+      next()
+    } else {
+      next('/login')
+    }
+  }
 })
 export default router
