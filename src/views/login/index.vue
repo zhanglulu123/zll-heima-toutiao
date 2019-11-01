@@ -30,22 +30,15 @@ import local from '@/utils/local'
 export default {
   // 自定义校验规则
   data () {
-    const checkMobile = (rule, value, callBack) => {
-      if (/^1[3-9]\d{9}$/.test(value)) {
-        callBack()
-      } else {
-        callBack(new Error('请输入正确的手机号'))
-      }
-    }
     return {
       loginForm: {
-        // mobile: '19999999999',
-        // code: '246810'
+        mobile: '19999999999',
+        code: '246810'
       },
       loginRules: {
         mobile: [
           { required: true, message: '请输入手机号码', trigger: 'blur' },
-          { validator: checkMobile, trigger: 'blur' }
+          { validator: this.checkMobile, trigger: 'blur' }
         ],
         code: [
           { required: true, message: '请输入验证码', trigger: 'blur' },
@@ -55,9 +48,16 @@ export default {
     }
   },
   methods: {
+    checkMobile (rule, value, callBack) {
+      if (/^1[3-9]\d{9}$/.test(value)) {
+        callBack()
+      } else {
+        callBack(new Error('请输入正确的手机号'))
+      }
+    },
     login () {
-      this.$refs['loginForm'].validate(async valid => {
-        if (valid) {
+      this.$refs['loginForm'].validate(async validate => {
+        if (validate) {
           try {
             const { data: { data } } = await this.$http.post('authorizations', this.loginForm)
             // 成功
